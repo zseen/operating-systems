@@ -23,14 +23,16 @@ class Actions:
         self.currentDirectory += "\\"
         self.currentDirectory += ' '.join(instruction[1:])
         path = self.currentDirectory
+        print("")
         if os.path.isdir(path):
             print("You are in " + self.currentDirectory + " now")
         else:
             self.currentDirectory = directoryBeforeChange
             print("No such directory to step into, I will return to " + self.currentDirectory)
+        print("")
 
     def cat(self, file1, file2):
-        with open("c.txt", "w") as catFile:
+        with open("c.txt", "r+") as catFile:
             with open(self.currentDirectory + "\\" + file1, 'r') as f1:
                 with open(self.currentDirectory + "\\" + file2, 'r') as f2:
                     for line in f1:
@@ -41,11 +43,16 @@ class Actions:
                 print(line)
 
     def openFile(self, file):
+        ### check if file is in directory
+        previousDirectory = self.currentDirectory
         self.currentDirectory += "\\"
         self.currentDirectory += file
         with open(self.currentDirectory, 'r') as f:
             for line in f:
                 print(line)
+        self.currentDirectory = previousDirectory
+
+        print("")
 
 
 
@@ -53,7 +60,15 @@ class CommandPrompt(Actions):
 
     def runCommand(self):
         while True:
-            command = input("What should I do? Type 'ls /W' to see my content horizontally, 'ls /D' to see my content vertically, 'cd <somewhere>' to go somewhere  or 'exit' to...exit!: ")
+            command = input("What should I do? Type:"
+                            "'ls /W' to see my content horizontally," '\n'
+                            "'ls /D' to see my content vertically, "  '\n'
+                            "'openfile <file>' to open a text file, " '\n'
+                            "'cat <file1> <file2>' to put two text files together," '\n'
+                            "'cd <somewhere>' to go somewhere, or " '\n'
+                            "'exit' to...exit!: ")
+
+
 
             request = command.split()
 
