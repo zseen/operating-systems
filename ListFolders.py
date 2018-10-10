@@ -22,9 +22,8 @@ class Actions:
         directoryBeforeChange = self.currentDirectory
         self.currentDirectory += "\\"
         self.currentDirectory += ' '.join(instruction[1:])
-        path = self.currentDirectory
         print("")
-        if os.path.isdir(path):
+        if os.path.isdir(self.currentDirectory):
             print("You are in " + self.currentDirectory + " now")
         else:
             self.currentDirectory = directoryBeforeChange
@@ -37,22 +36,26 @@ class Actions:
                 with open(self.currentDirectory + "\\" + file2, 'r') as f2:
                     for line in f1:
                         catFile.write(line)
+                        print(line)
                     for line in f2:
                         catFile.write(line)
+                        print(line)
             for line in catFile:
                 print(line)
 
     def openFile(self, file):
-        ### check if file is in directory
         previousDirectory = self.currentDirectory
-        self.currentDirectory += "\\"
-        self.currentDirectory += file
-        with open(self.currentDirectory, 'r') as f:
-            for line in f:
-                print(line)
-        self.currentDirectory = previousDirectory
+        try:
+            self.currentDirectory += "\\"
+            self.currentDirectory += file
+            with open(self.currentDirectory, 'r') as f:
+                for line in f:
+                    print(line)
+            self.currentDirectory = previousDirectory
 
-        print("")
+        except FileNotFoundError:
+            print("This file does not exist.")
+            self.currentDirectory = previousDirectory
 
 
 
@@ -67,8 +70,6 @@ class CommandPrompt(Actions):
                             "'cat <file1> <file2>' to put two text files together," '\n'
                             "'cd <somewhere>' to go somewhere, or " '\n'
                             "'exit' to...exit!: ")
-
-
 
             request = command.split()
 
