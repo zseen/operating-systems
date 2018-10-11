@@ -10,14 +10,9 @@ class Actions:
         print("")
         print("The content of " + self.currentDirectory + " is: ")
 
-        if len(instruction) > 1 and instruction[1] == "-r":
-            directory = self.currentDirectory
-            for root, dir, files in os.walk(directory):
-                files.sort(reverse=True)
-
-                for item in files:
+        if len(instruction) == 2 and instruction[1] == "-r":
+            for item in reversed(list(os.listdir(self.currentDirectory))):
                     print(item)
-
         else:
             for item in os.listdir(self.currentDirectory):
                 print(item)
