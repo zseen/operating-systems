@@ -4,7 +4,10 @@ import os
 class Actions:
     def __init__(self):
         self.currentDirectory = "C:\\Users"
+
+    def printCurrentDirectory(self):
         print(self.currentDirectory)
+
 
     def ls(self, instruction):
         print("")
@@ -19,18 +22,17 @@ class Actions:
         print("")
 
     def cd(self, instruction):
-        directoryBeforeChange = self.currentDirectory  # 3. Only do the assignment once the check was successful
-        self.currentDirectory += "\\"
-        self.currentDirectory += ' '.join(instruction[1:])
+        newPath = self.currentDirectory + "\\" + ' '.join(instruction[1:])
         print("")
-        if os.path.isdir(self.currentDirectory):
+
+        if os.path.isdir(newPath):
+            self.currentDirectory = newPath
             print("You are in " + self.currentDirectory + " now")
         else:
-            self.currentDirectory = directoryBeforeChange
             print("No such directory to step into, so you are in " + self.currentDirectory)
         print("")
 
-    def cat(self, file1, file2):
+    def together(self, file1, file2):
         with open("c.txt", "r+") as catFile:
             with open(self.currentDirectory + "\\" + file1, 'r') as f1:
                 with open(self.currentDirectory + "\\" + file2, 'r') as f2:
@@ -43,7 +45,7 @@ class Actions:
             for line in catFile:
                 print(line)
 
-    def openFile(self, file):
+    def cat(self, file):
         previousDirectory = self.currentDirectory
         try:
             self.currentDirectory += "\\"
@@ -63,6 +65,7 @@ class CommandPrompt(Actions):
 
     def runCommand(self):
         while True:
+            self.printCurrentDirectory()
             command = input("What should I do? Type:" '\n'
                             "'ls' to see my content, " '\n'
                             "'ls -r' to see my content reversed, "  '\n'
@@ -79,11 +82,11 @@ class CommandPrompt(Actions):
             if request[0] == "cd":
                 self.cd(request)
 
-            if request[0] == "cat":
-                self.cat(request[1], request[2])
+            if request[0] == "together":
+                self.together(request[1], request[2])
 
-            if request[0] == "openFile":
-                self.openFile(request[1])
+            if request[0] == "cat":
+                self.cat(request[1])
 
             if command == "exit":
                 break
