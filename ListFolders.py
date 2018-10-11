@@ -8,14 +8,13 @@ class Actions:
     def printCurrentDirectory(self):
         print(self.currentDirectory)
 
-
     def ls(self, instruction):
         print("")
         print("The content of " + self.currentDirectory + " is: ")
 
         if len(instruction) == 2 and instruction[1] == "-r":
             for item in reversed(list(os.listdir(self.currentDirectory))):
-                    print(item)
+                print(item)
         else:
             for item in os.listdir(self.currentDirectory):
                 print(item)
@@ -33,44 +32,40 @@ class Actions:
         print("")
 
     def together(self, file1, file2):
-        with open("c.txt", "r+") as catFile:
-            with open(self.currentDirectory + "\\" + file1, 'r') as f1:
-                with open(self.currentDirectory + "\\" + file2, 'r') as f2:
-                    for line in f1:
-                        catFile.write(line)
-                        print(line)
-                    for line in f2:
-                        catFile.write(line)
-                        print(line)
-            for line in catFile:
-                print(line)
+        path1 = self.currentDirectory + "\\" + file1
+        path2 = self.currentDirectory + "\\" + file2
+        try:
+            with open("c.txt", "w") as catFile, open(path1, 'r') as f1, open(path2, 'r') as f2:
+                for line in f1:
+                    catFile.write(line)
+                for line in f2:
+                    catFile.write(line)
+
+            with open("c.txt", "r") as catFile:
+                for line in catFile:
+                    print(line)
+        except IOError or OSError:
+            print("Please choose other files as I cannot find them!")
 
     def cat(self, file):
-        previousDirectory = self.currentDirectory
         try:
-            self.currentDirectory += "\\"
-            self.currentDirectory += file
-            with open(self.currentDirectory, 'r') as f:
+            newPath = self.currentDirectory + "\\" + file
+            with open(newPath, 'r') as f:
                 for line in f:
                     print(line)
-            self.currentDirectory = previousDirectory
-
         except FileNotFoundError:
             print("This file does not exist.")
-            self.currentDirectory = previousDirectory
-
 
 
 class CommandPrompt(Actions):
-
-    def runCommand(self):
+    def run(self):
         while True:
             self.printCurrentDirectory()
             command = input("What should I do? Type:" '\n'
                             "'ls' to see my content, " '\n'
                             "'ls -r' to see my content reversed, "  '\n'
-                            "'openfile <file>' to open a text file, " '\n'
-                            "'cat <file1> <file2>' to put two text files together," '\n'
+                            "'cat <file>' to open a text file, " '\n'
+                            "'together <file1> <file2>' to put two text files together," '\n'
                             "'cd <somewhere>' to go somewhere, or " '\n'
                             "'exit' to...exit!: ")
 
@@ -83,10 +78,20 @@ class CommandPrompt(Actions):
                 self.cd(request)
 
             if request[0] == "together":
-                self.together(request[1], request[2])
+                if len(request) == 3:
+                    self.together(request[1], request[2])
+                elif len(request) == 2:
+                    print("I think you mean 'cat <file>.'")
+                else:
+                    print("Please give me TWO files.")
 
             if request[0] == "cat":
-                self.cat(request[1])
+                if len(request) == 2:
+                    self.cat(request[1])
+                elif len(request) == 3:
+                    print("I think you are looking for 'together <file1> <file2>'")
+                else:
+                    print("Please give me ONE file, so that I can show you its content.")
 
             if command == "exit":
                 break
@@ -94,7 +99,7 @@ class CommandPrompt(Actions):
 
 def main():
     command = CommandPrompt()
-    command.runCommand()
+    command.run()
 
 if __name__ == "__main__":
     main()
