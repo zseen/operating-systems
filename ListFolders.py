@@ -10,16 +10,20 @@ class Actions:
         print("")
         print("The content of " + self.currentDirectory + " is: ")
 
-        if len(instruction) == 1 or instruction[1] == "/W":
-            print(', '.join(os.listdir(self.currentDirectory)))
+        if len(instruction) == 1 and instruction[1] == "-r":
+            directory = self.currentDirectory
+            for root, dir, files in os.walk(directory):
+                files.sort(reverse=True)
+                for item in files:
+                    print(item)
 
-        elif instruction[1] == "/D":
+        else:
             for item in os.listdir(self.currentDirectory):
                 print(item)
         print("")
 
     def cd(self, instruction):
-        directoryBeforeChange = self.currentDirectory
+        directoryBeforeChange = self.currentDirectory  # 3. Only do the assignment once the check was successful
         self.currentDirectory += "\\"
         self.currentDirectory += ' '.join(instruction[1:])
         print("")
@@ -27,7 +31,7 @@ class Actions:
             print("You are in " + self.currentDirectory + " now")
         else:
             self.currentDirectory = directoryBeforeChange
-            print("No such directory to step into, I will return to " + self.currentDirectory)
+            print("No such directory to step into, so you are in " + self.currentDirectory)
         print("")
 
     def cat(self, file1, file2):
@@ -63,9 +67,9 @@ class CommandPrompt(Actions):
 
     def runCommand(self):
         while True:
-            command = input("What should I do? Type:"
-                            "'ls /W' to see my content horizontally," '\n'
-                            "'ls /D' to see my content vertically, "  '\n'
+            command = input("What should I do? Type:" '\n'
+                            "'ls' to see my content, " '\n'
+                            "'ls -r' to see my content reversed, "  '\n'
                             "'openfile <file>' to open a text file, " '\n'
                             "'cat <file1> <file2>' to put two text files together," '\n'
                             "'cd <somewhere>' to go somewhere, or " '\n'
