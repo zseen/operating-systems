@@ -103,7 +103,7 @@ class CommandPrompt(Actions):
                             "'ls -r' to see my content reversed, "  '\n'
                             "'cat <file>' to see the content of a text file, " '\n'
                             "'together <file1> <file2>' to put two text files together," '\n'
-                            "'mkdir <name>' to create a folder, " '\n'
+                            "'mkdir <name>' to create a folder, " '\n' 
                             "'rm <name>' to delete a file or folder, " '\n'
                             "'head <file> <x>' to see the first x lines of a file, " '\n'
                             "'cd <somewhere>' to go somewhere, or " '\n'
