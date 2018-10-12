@@ -1,4 +1,5 @@
 import os
+import shutil
 
 
 class Actions:
@@ -64,6 +65,19 @@ class Actions:
         else:
             print("This folder already exists.")
 
+    def rm(self, name):
+        filePath = self.currentDirectory + "\\" + name
+        if os.path.isdir(filePath):
+            shutil.rmtree(filePath)
+            print("Folder " + name + " removed.")
+
+        elif os.path.exists(filePath):
+            os.remove(filePath)
+            print("File " + name + " removed.")
+
+        else:
+            print("I cannot find this file or folder.")
+
 
 class CommandPrompt(Actions):
     def run(self):
@@ -91,8 +105,11 @@ class CommandPrompt(Actions):
             if request[0] == "cat" and len(request) == 2:
                 self.cat(request[1])
 
-            if request[0] == "mkdir":
+            if request[0] == "mkdir" and len(request) == 2:
                 self.mkdir(request[1])
+
+            if request[0] == "rm":
+                self.rm(request[1])
 
             if command == "exit":
                 break
