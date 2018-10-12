@@ -10,6 +10,10 @@ class Actions:
     def printCurrentDirectory(self):
         print(self.currentDirectory)
 
+    def createDirectory(self, destination):
+        newPath = self.currentDirectory + "\\" + destination
+        return newPath
+
     def ls(self, instruction):
         print("")
         print("The content of " + self.currentDirectory + " is: ")
@@ -23,7 +27,7 @@ class Actions:
         print("")
 
     def cd(self, instruction):
-        newPath = self.currentDirectory + "\\" + ' '.join(instruction[1:])
+        newPath = (self.createDirectory((''.join(instruction[1:]))))
         print("")
 
         if os.path.isdir(newPath):
@@ -50,8 +54,8 @@ class Actions:
             print("Please choose other files as I cannot find them!")
 
     def cat(self, file):
-        if os.path.isfile(self.currentDirectory + "\\" + file):
-            newPathFile = self.currentDirectory + "\\" + file
+        if os.path.isfile(self.createDirectory(file)):
+            newPathFile = self.createDirectory(file)
             with open(newPathFile, 'r') as f:
                 for line in f:
                     print(line)
@@ -59,15 +63,15 @@ class Actions:
             print("This file does not exist.")
 
     def mkdir(self, name):
-        newpath = self.currentDirectory + "\\" + name
-        if not os.path.exists(newpath):
-            os.makedirs(newpath)
-            print("Your new folder is ready! It is called " + name + " and is here: " + newpath)
+        newPath = self.createDirectory(name)
+        if not os.path.exists(newPath):
+            os.makedirs(newPath)
+            print("Your new folder is ready! It is called " + name + " and is here: " + newPath)
         else:
             print("This folder already exists.")
 
     def rm(self, name):
-        filePath = self.currentDirectory + "\\" + name
+        filePath = self.createDirectory(name)
         if os.path.isdir(filePath):
             shutil.rmtree(filePath)
             print("Folder " + name + " removed.")
@@ -80,7 +84,7 @@ class Actions:
             print("I cannot find this file or folder.")
 
     def head(self, file, linesNum):
-        path = self.currentDirectory  + "\\" + file
+        path = self.createDirectory(file)
         if os.path.exists(path):
             with open(path, "r") as f:
                 for line in islice(f, int(linesNum)):
@@ -97,8 +101,11 @@ class CommandPrompt(Actions):
             command = input("What should I do? Type:" '\n'
                             "'ls' to see my content, " '\n'
                             "'ls -r' to see my content reversed, "  '\n'
-                            "'cat <file>' to open a text file, " '\n'
+                            "'cat <file>' to see the content of a text file, " '\n'
                             "'together <file1> <file2>' to put two text files together," '\n'
+                            "'mkdir <name>' to create a folder, " '\n'
+                            "'rm <name>' to delete a file or folder, " '\n'
+                            "'head <file> <x>' to see the first x lines of a file, " '\n'
                             "'cd <somewhere>' to go somewhere, or " '\n'
                             "'exit' to...exit!: ")
 
