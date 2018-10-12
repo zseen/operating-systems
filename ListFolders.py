@@ -5,13 +5,16 @@ from itertools import islice
 
 class Actions:
     def __init__(self):
-        self.currentDirectory = "C:\\Users"
+
+        homeFolder = os.getenv("HOME")
+        self.currentDirectory = homeFolder
+
 
     def printCurrentDirectory(self):
         print(self.currentDirectory)
 
     def createDirectory(self, destination):
-        newPath = self.currentDirectory + "\\" + destination
+        newPath = os.path.join(self.currentDirectory, destination)
         return newPath
 
     def ls(self, instruction):
@@ -103,7 +106,7 @@ class CommandPrompt(Actions):
                             "'ls -r' to see my content reversed, "  '\n'
                             "'cat <file>' to see the content of a text file, " '\n'
                             "'together <file1> <file2>' to put two text files together," '\n'
-                            "'mkdir <name>' to create a folder, " '\n' 
+                            "'mkdir <name>' to create a folder, " '\n'
                             "'rm <name>' to delete a file or folder, " '\n'
                             "'head <file> <x>' to see the first x lines of a file, " '\n'
                             "'cd <somewhere>' to go somewhere, or " '\n'
