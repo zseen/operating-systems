@@ -48,13 +48,19 @@ class Actions:
             print("Please choose other files as I cannot find them!")
 
     def cat(self, file):
-        try:
-            newPath = self.currentDirectory + "\\" + file
-            with open(newPath, 'r') as f:
+        if os.path.isfile(self.currentDirectory + "\\" + file):
+            newPathFile = self.currentDirectory + "\\" + file
+            with open(newPathFile, 'r') as f:
                 for line in f:
                     print(line)
-        except FileNotFoundError:
+        else:
             print("This file does not exist.")
+
+    def mkdir(self, name):
+        newpath = self.currentDirectory + "\\" + name
+        if not os.path.exists(newpath):
+            os.makedirs(newpath)
+            print("Your new folder is ready!")
 
 
 class CommandPrompt(Actions):
@@ -77,21 +83,14 @@ class CommandPrompt(Actions):
             if request[0] == "cd":
                 self.cd(request)
 
-            if request[0] == "together":
-                if len(request) == 3:
-                    self.together(request[1], request[2])
-                elif len(request) == 2:
-                    print("I think you mean 'cat <file>.'")
-                else:
-                    print("Please give me TWO files.")
+            if request[0] == "together" and len(request) == 3:
+                self.together(request[1], request[2])
 
-            if request[0] == "cat":
-                if len(request) == 2:
-                    self.cat(request[1])
-                elif len(request) == 3:
-                    print("I think you are looking for 'together <file1> <file2>'")
-                else:
-                    print("Please give me ONE file, so that I can show you its content.")
+            if request[0] == "cat" and len(request) == 2:
+                self.cat(request[1])
+
+            if request[0] == "mkdir":
+                self.mkdir(request[1])
 
             if command == "exit":
                 break
