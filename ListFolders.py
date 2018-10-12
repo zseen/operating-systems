@@ -1,5 +1,6 @@
 import os
 import shutil
+from itertools import islice
 
 
 class Actions:
@@ -78,6 +79,16 @@ class Actions:
         else:
             print("I cannot find this file or folder.")
 
+    def head(self, file, linesNum):
+        path = self.currentDirectory  + "\\" + file
+        if os.path.exists(path):
+            with open(path, "r") as f:
+                for line in islice(f, int(linesNum)):
+                    print(line)
+        else:
+            print("I cannot find this file.")
+
+
 
 class CommandPrompt(Actions):
     def run(self):
@@ -108,8 +119,11 @@ class CommandPrompt(Actions):
             if request[0] == "mkdir" and len(request) == 2:
                 self.mkdir(request[1])
 
-            if request[0] == "rm":
+            if request[0] == "rm" and len(request) == 2:
                 self.rm(request[1])
+
+            if request[0] == "head" and len(request) == 3:
+                self.head(request[1], request[2])
 
             if command == "exit":
                 break
