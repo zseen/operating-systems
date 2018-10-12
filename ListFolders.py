@@ -60,7 +60,9 @@ class Actions:
         newpath = self.currentDirectory + "\\" + name
         if not os.path.exists(newpath):
             os.makedirs(newpath)
-            print("Your new folder is ready!")
+            print("Your new folder is ready! It is called " + name + " and is here: " + newpath)
+        else:
+            print("This folder already exists.")
 
 
 class CommandPrompt(Actions):
