@@ -5,17 +5,26 @@ from itertools import islice
 
 class Actions:
     def __init__(self):
+        self.currentDirectory = "C:\\Users"
 
-        homeFolder = os.getenv("HOME")
-        self.currentDirectory = homeFolder
+        #homeFolder = os.getenv("HOME")
+        #self.currentDirectory = homeFolder
 
 
     def printCurrentDirectory(self):
         print(self.currentDirectory)
 
-    def createDirectory(self, destination):
+    def createDirectoryPath(self, destination):
         newPath = os.path.join(self.currentDirectory, destination)
         return newPath
+
+    def checkIfFileExists(self, path):
+        if os.path.isfile(path) is True:
+            return True
+        else:
+            print("I cannot find " + path)
+        return False
+
 
     def ls(self, instruction):
         print("")
@@ -30,7 +39,7 @@ class Actions:
         print("")
 
     def cd(self, instruction):
-        newPath = (self.createDirectory((''.join(instruction[1:]))))
+        newPath = (self.createDirectoryPath((''.join(instruction[1:]))))
         print("")
 
         if os.path.isdir(newPath):
@@ -40,11 +49,13 @@ class Actions:
             print("No such directory to step into, so you are in " + self.currentDirectory)
         print("")
 
-    def together(self, file1, file2):
-        path1 = self.currentDirectory + "\\" + file1
-        path2 = self.currentDirectory + "\\" + file2
-        try:
-            with open("c.txt", "w") as catFile, open(path1, 'r') as f1, open(path2, 'r') as f2:
+    def joinTogether(self, file1, file2, file3):
+        path1 = self.createDirectoryPath(file1)
+        path2 = self.createDirectoryPath(file2)
+        path3 = self.createDirectoryPath(file3)
+
+        if self.checkIfFileExists(path1) and self.checkIfFileExists(path2):
+            with open(path3, "w") as catFile, open(path1, 'r') as f1, open(path2, 'r') as f2:
                 for line in f1:
                     catFile.write(line)
                 for line in f2:
@@ -53,12 +64,23 @@ class Actions:
             with open("c.txt", "r") as catFile:
                 for line in catFile:
                     print(line)
-        except IOError or OSError:
-            print("Please choose other files as I cannot find them!")
+
+
+    def printTogether(self, file1, file2):
+        path1 = self.createDirectoryPath(file1)
+        path2 = self.createDirectoryPath(file2)
+
+        if self.checkIfFileExists(path1) and self.checkIfFileExists(path2):
+            with open(path1, "r") as f1, open(path2, "r") as f2:
+                for line in f1:
+                    print(line, end="")
+                for line in f2:
+                    print(line)
+
 
     def cat(self, file):
-        if os.path.isfile(self.createDirectory(file)):
-            newPathFile = self.createDirectory(file)
+        if os.path.isfile(self.createDirectoryPath(file)):
+            newPathFile = self.createDirectoryPath(file)
             with open(newPathFile, 'r') as f:
                 for line in f:
                     print(line)
@@ -66,7 +88,7 @@ class Actions:
             print("This file does not exist.")
 
     def mkdir(self, name):
-        newPath = self.createDirectory(name)
+        newPath = self.createDirectoryPath(name)
         if not os.path.exists(newPath):
             os.makedirs(newPath)
             print("Your new folder is ready! It is called " + name + " and is here: " + newPath)
@@ -74,7 +96,7 @@ class Actions:
             print("This folder already exists.")
 
     def rm(self, name):
-        filePath = self.createDirectory(name)
+        filePath = self.createDirectoryPath(name)
         if os.path.isdir(filePath):
             shutil.rmtree(filePath)
             print("Folder " + name + " removed.")
@@ -87,7 +109,7 @@ class Actions:
             print("I cannot find this file or folder.")
 
     def head(self, file, linesNum):
-        path = self.createDirectory(file)
+        path = self.createDirectoryPath(file)
         if os.path.exists(path):
             with open(path, "r") as f:
                 for line in islice(f, int(linesNum)):
@@ -120,8 +142,11 @@ class CommandPrompt(Actions):
             if request[0] == "cd":
                 self.cd(request)
 
-            if request[0] == "together" and len(request) == 3:
-                self.together(request[1], request[2])
+            if request[0] == "joinTogether" and len(request) == 4:
+                self.joinTogether(request[1], request[2], request[3])
+
+            if request[0] == "printTogether" and len(request) == 3:
+                self.printTogether(request[1], request[2])
 
             if request[0] == "cat" and len(request) == 2:
                 self.cat(request[1])
