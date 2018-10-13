@@ -57,7 +57,7 @@ class Actions:
                 for line in f2:
                     catFile.write(line)
 
-            with open("c.txt", "r") as catFile:
+            with open(path3, "r") as catFile:
                 for line in catFile:
                     print(line)
 
@@ -157,4 +157,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
