@@ -1,15 +1,12 @@
 import os
-import shutil
 from itertools import islice
+from pathlib import Path
 
 
 class Actions:
     def __init__(self):
-        self.currentDirectory = "C:\\Users"
-
-        #homeFolder = os.getenv("HOME")
-        #self.currentDirectory = homeFolder
-
+        home = str(Path.home())
+        self.currentDirectory = home
 
     def printCurrentDirectory(self):
         print(self.currentDirectory)
@@ -24,7 +21,6 @@ class Actions:
         else:
             print("I cannot find " + path)
         return False
-
 
     def ls(self, instruction):
         print("")
@@ -65,7 +61,6 @@ class Actions:
                 for line in catFile:
                     print(line)
 
-
     def printTogether(self, file1, file2):
         path1 = self.createDirectoryPath(file1)
         path2 = self.createDirectoryPath(file2)
@@ -76,7 +71,6 @@ class Actions:
                     print(line, end="")
                 for line in f2:
                     print(line)
-
 
     def cat(self, file):
         if os.path.isfile(self.createDirectoryPath(file)):
@@ -109,7 +103,6 @@ class Actions:
                     print(line)
         else:
             print("I cannot find this file.")
-
 
 
 class CommandPrompt(Actions):
@@ -164,3 +157,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
