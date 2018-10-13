@@ -38,8 +38,8 @@ class Actions:
                 print(item)
         print("")
 
-    def cd(self, instruction):
-        newPath = (self.createDirectoryPath((''.join(instruction[1:]))))
+    def cd(self, location):
+        newPath = (self.createDirectoryPath((''.join(location))))
         print("")
 
         if os.path.isdir(newPath):
@@ -97,16 +97,9 @@ class Actions:
 
     def rm(self, name):
         filePath = self.createDirectoryPath(name)
-        if os.path.isdir(filePath):
-            shutil.rmtree(filePath)
-            print("Folder " + name + " removed.")
-
-        elif os.path.exists(filePath):
+        if self.checkIfFileExists(filePath):
             os.remove(filePath)
             print("File " + name + " removed.")
-
-        else:
-            print("I cannot find this file or folder.")
 
     def head(self, file, linesNum):
         path = self.createDirectoryPath(file)
@@ -127,9 +120,10 @@ class CommandPrompt(Actions):
                             "'ls' to see my content, " '\n'
                             "'ls -r' to see my content reversed, "  '\n'
                             "'cat <file>' to see the content of a text file, " '\n'
-                            "'together <file1> <file2>' to put two text files together," '\n'
+                            "'printTogether <file1> <file2>' to print two text files together," '\n'
+                            "'joinTogether <file1> <file2> <file3>' merge file1 and file2 into file3," '\n'
                             "'mkdir <name>' to create a folder, " '\n'
-                            "'rm <name>' to delete a file or folder, " '\n'
+                            "'rm <name>' to delete a file, " '\n'
                             "'head <file> <x>' to see the first x lines of a file, " '\n'
                             "'cd <somewhere>' to go somewhere, or " '\n'
                             "'exit' to...exit!: ")
@@ -137,10 +131,10 @@ class CommandPrompt(Actions):
             request = command.split()
 
             if request[0] == "ls":
-                self.ls(request)
+                self.ls(request[0])
 
             if request[0] == "cd":
-                self.cd(request)
+                self.cd(request[1:])
 
             if request[0] == "joinTogether" and len(request) == 4:
                 self.joinTogether(request[1], request[2], request[3])
