@@ -4,14 +4,9 @@ from BackgroundCommands import Commands
 from HandleFiles import FilesHandling
 
 
-class Actions(FilesHandling):
-    pass
 
 
-
-
-
-class CommandPrompt(Actions):
+class CommandPrompt(FilesHandling):
     def run(self):
         while True:
             self.printCurrentDirectory()
@@ -24,15 +19,15 @@ class CommandPrompt(Actions):
                             "'mkdir <name>' to create a folder, " '\n'
                             "'rm <name>' to delete a file, " '\n'
                             "'head <file> <x>' to see the first x lines of a file, " '\n'
-                            "'cd <somewhere>' to go somewhere, or " '\n'
-                            "'goBackOneLevel' to go back to the previous level directory"
+                            "'cd <somewhere>' to go somewhere, " '\n'
+                            "'cd..' to go back to the previous level directory, or " '\n'
                             "'exit' to...exit!: ")
 
 
             request = command.split()
 
             if request[0] == "ls":
-                self.ls(request[0])
+                self.ls(request)
 
             if request[0] == "cd":
                 self.cd(request[1:])
@@ -55,7 +50,7 @@ class CommandPrompt(Actions):
             if request[0] == "head" and len(request) == 3:
                 self.head(request[1], request[2])
 
-            if request[0] == "goBackOneLevel":
+            if request[0] == "cd..":
                 self.goBackOneLevel()
 
             if command == "exit":
