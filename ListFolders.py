@@ -26,6 +26,11 @@ class CommandPrompt(FilesHandling):
 
             request = command.split()
 
+
+            #commandDict = {"ls": self.ls(request), "cd": self.cd(request[1:]), "joinTogether": self.joinTogether(request[1], request[2], request[3]),
+                           #"printTogether": self.printTogether(request[1], request[2]), "cat": self.cat(request[1]), "mkdir": self.mkdir(request[1]),
+                           #"rm": self.rm(request[1]), "head": self.head(request[1], request[2]), "exit": exit(0)}
+
             if request[0] == "ls":
                 self.ls(request)
 
@@ -55,10 +60,6 @@ class CommandPrompt(FilesHandling):
 
             if command == "exit":
                 exit(0)
-
-
-
-
 
 
 def main():
