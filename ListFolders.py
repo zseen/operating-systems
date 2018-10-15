@@ -9,6 +9,8 @@ class Actions(FilesHandling):
 
 
 
+
+
 class CommandPrompt(Actions):
     def run(self):
         while True:
@@ -23,7 +25,9 @@ class CommandPrompt(Actions):
                             "'rm <name>' to delete a file, " '\n'
                             "'head <file> <x>' to see the first x lines of a file, " '\n'
                             "'cd <somewhere>' to go somewhere, or " '\n'
+                            "'goBackOneLevel' to go back to the previous level directory"
                             "'exit' to...exit!: ")
+
 
             request = command.split()
 
@@ -51,8 +55,16 @@ class CommandPrompt(Actions):
             if request[0] == "head" and len(request) == 3:
                 self.head(request[1], request[2])
 
+            if request[0] == "goBackOneLevel":
+                self.goBackOneLevel()
+
             if command == "exit":
-                break
+                exit(0)
+
+
+
+
+
 
 def main():
     command = CommandPrompt()

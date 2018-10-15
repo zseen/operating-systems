@@ -43,3 +43,12 @@ class Commands:
         else:
             print("No such directory to step into, so you are in " + self.currentDirectory)
         print("")
+
+    def goBackOneLevel(self):
+        if self.currentDirectory == str(Path.home()):
+            print("You cannot go up, as you are in your home folder.")
+        else:
+            pathToModify = list(os.path.split(self.currentDirectory))
+            pathToModify.pop()
+            for directory in pathToModify:
+                self.currentDirectory = str(directory)
