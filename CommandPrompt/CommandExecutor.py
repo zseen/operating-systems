@@ -22,7 +22,7 @@ class CommandExecutor:
         return foldersList
 
     def cd(self,location):
-        if location[0] == "..":
+        if location[0] == "parentDirectory":
             currentDir = self.goBackOneLevel()
             self.currentDirectory = currentDir
         else:
@@ -52,6 +52,7 @@ class CommandExecutor:
         path1 = FH.createDirectoryPath(self.currentDirectory, file1)
         path2 = FH.createDirectoryPath(self.currentDirectory, file2)
         path3 = FH.createDirectoryPath(self.currentDirectory, file3)
+        content = []
 
         if FH.checkIfFileExists(path1) and FH.checkIfFileExists(path2):
             with open(path3, "w") as catFile, open(path1, 'r') as f1, open(path2, 'r') as f2:
@@ -62,54 +63,67 @@ class CommandExecutor:
 
             with open(path3, "r") as catFile:
                 for line in catFile:
-                    print(line)
+                    content.append(line)
+            return content
+        else:
+            return False
 
     def printTogether(self, file1, file2):
         path1 = FH.createDirectoryPath(self.currentDirectory, file1)
         path2 = FH.createDirectoryPath(self.currentDirectory, file2)
+        content = []
 
         if FH.checkIfFileExists(path1) and FH.checkIfFileExists(path2):
             with open(path1, "r") as f1, open(path2, "r") as f2:
                 for line in f1:
-                    print(line, end="")
+                    content.append(line)
                 for line in f2:
-                    print(line)
+                    content.append(line)
+            return content
+        else:
+            return False
+
 
     def cat(self, file):
         pathToFile = FH.createDirectoryPath(self.currentDirectory, file)
         exists = FH.checkIfFileExists(pathToFile)
+        content = []
 
         if exists:
             with open(pathToFile, 'r') as f:
                 for line in f:
-                    print(line)
+                    content.append(line)
+            return content
         else:
-            print("This file does not exist.")
+            return False
 
     def mkdir(self, name):
         newPath = FH.createDirectoryPath(self.currentDirectory, name)
+
         if not FH.checkIfDirectoryExists(newPath):
             os.makedirs(newPath)
-            print("Your new folder is ready! It is called " + name + " and is here: " + newPath)
+            return newPath
         else:
-            print("This folder already exists.")
+            return False
 
     def rm(self, name):
         filePath = FH.createDirectoryPath(self.currentDirectory, name)
         exists = FH.checkIfFileExists(filePath)
         if exists:
             os.remove(filePath)
-            print("File " + name + " removed.")
+            return True
         else:
-            print("I cannot find this file.")
+            return False
 
     def head(self, file, linesNum):
         path = FH.createDirectoryPath(self.currentDirectory, file)
         exists = FH.checkIfFileExists(path)
+        content = []
         if exists:
             with open(path, "r") as f:
                 for line in islice(f, int(linesNum)):
-                    print(line)
+                    content.append(line)
+            return content
         else:
-            print("I cannot find this file.")
+            return False
 
