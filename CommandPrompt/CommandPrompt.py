@@ -63,12 +63,12 @@ class CommandPrompt:
         print("")
 
     def cd(self, location):
-        currentPath = self.commandExecutor.getCurrentDirectory()
+        pathBeforeChange = self.commandExecutor.getCurrentDirectory()
         newPath = self.commandExecutor.cd(location)
 
         if newPath is False:
             print("Directory does not exist.")
-        elif currentPath == newPath:
+        elif pathBeforeChange == newPath:
             print("You cannot go up, as you have reached root level.")
         else:
             print("You are in " + newPath + " now.")
@@ -129,4 +129,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
