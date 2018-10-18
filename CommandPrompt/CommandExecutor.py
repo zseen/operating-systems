@@ -33,7 +33,7 @@ class CommandExecutor:
             if exists:
                 self.currentDirectory = newPath
             else:
-                return False
+                return None
         return self.currentDirectory
 
 
@@ -66,7 +66,7 @@ class CommandExecutor:
                     content.append(line)
             return content
         else:
-            return False
+            return None
 
     def printTogether(self, file1, file2):
         path1 = FH.createDirectoryPath(self.currentDirectory, file1)
@@ -81,7 +81,7 @@ class CommandExecutor:
                     content.append(line)
             return content
         else:
-            return False
+            return None
 
 
     def cat(self, file):
@@ -95,7 +95,7 @@ class CommandExecutor:
                     content.append(line)
             return content
         else:
-            return False
+            return None
 
     def mkdir(self, name):
         newPath = FH.createDirectoryPath(self.currentDirectory, name)
@@ -104,7 +104,7 @@ class CommandExecutor:
             os.makedirs(newPath)
             return newPath
         else:
-            return False
+            return None
 
     def rm(self, name):
         filePath = FH.createDirectoryPath(self.currentDirectory, name)
@@ -125,5 +125,5 @@ class CommandExecutor:
                     content.append(line)
             return content
         else:
-            return False
+            return None
 

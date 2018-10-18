@@ -24,7 +24,6 @@ class CommandPrompt:
         while True:
             print(self.commandExecutor.getCurrentDirectory())
             command = input("What should I do?: ")
-
             request = command.split()
 
             if request[0] == "ls":
