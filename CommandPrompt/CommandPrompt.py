@@ -10,7 +10,7 @@ INITIAL_HELP = ("Options:" '\n'
                 "'rm <name>' to delete a file, " '\n'
                 "'head <file> <x>' to see the first x lines of a file, " '\n'
                 "'cd <somewhere>' to go somewhere, " '\n'
-                "'cd parentDirectory' to go back to the previous level directory, or " '\n'
+                "'cd ..' to go back to the previous level directory, or " '\n'
                 "'exit' to...exit! " '\n')
 
 
@@ -30,7 +30,10 @@ class CommandPrompt:
                 self.ls(request)
 
             if request[0] == "cd":
-                self.cd(request[1:])
+                if request[1] == "..":
+                    self.getParentDirectory()
+                else:
+                    self.cd(request[1:])
 
             if request[0] == "joinTogether" and len(request) == 4:
                 self.joinTogether(request[1], request[2], request[3])
@@ -56,24 +59,26 @@ class CommandPrompt:
     def ls(self, request):
         print("")
         print("The content of " + self.commandExecutor.getCurrentDirectory() + " is:")
-        content = self.commandExecutor.ls(request)
+        content = self.commandExecutor.listDirectoryContent(request)
         for folder in content:
             print(folder)
         print("")
 
     def cd(self, location):
-        pathBeforeChange = self.commandExecutor.getCurrentDirectory()
-        newPath = self.commandExecutor.cd(location)
-
+        newPath = self.commandExecutor.changeDirectory(location)
         if newPath is False:
             print("Directory does not exist.")
-        elif pathBeforeChange == newPath:
-            print("You cannot go up, as you have reached root level.")
         else:
-            print("You are in " + newPath + " now.")
+            print("You are in " + self.commandExecutor.getCurrentDirectory() + " now.")
+
+    def getParentDirectory(self):
+        if self.commandExecutor.goBackOneLevel():
+            print("You are in " + self.commandExecutor.getCurrentDirectory() + " now.")
+        else:
+            print("Root level reached")
 
     def cat(self, file):
-        lines = self.commandExecutor.cat(file)
+        lines = self.commandExecutor.getFileContent(file)
         if lines:
             for line in lines:
                 print(line)
@@ -81,7 +86,7 @@ class CommandPrompt:
             print("I cannot find this file.")
 
     def printTogether(self, file1, file2):
-        lines = self.commandExecutor.printTogether(file1, file2)
+        lines = self.commandExecutor.printTwoFilesTogether(file1, file2)
         if lines:
             for line in lines:
                 print(line, end="")
@@ -90,7 +95,7 @@ class CommandPrompt:
             print("Please double-check your files.")
 
     def joinTogether(self, file1, file2, file3):
-        lines = self.commandExecutor.joinTogether(file1, file2, file3)
+        lines = self.commandExecutor.joinTwoFilesTogetherInThird(file1, file2, file3)
         if lines:
             for line in lines:
                 print(line, end="")
@@ -99,20 +104,21 @@ class CommandPrompt:
             print("Please double-check your files.")
 
     def mkdir(self, name):
-        newPath = self.commandExecutor.mkdir(name)
-        if newPath:
-            print("Your new folder is ready! It is called " + name + " and is here: " + newPath)
+        isCreated = self.commandExecutor.makeDirectory(name)
+        path = CLE.FH.createDirectoryPath(self.commandExecutor.getCurrentDirectory(), name)
+        if isCreated:
+            print("Your new folder is ready! It is called " + name + " and is here: " + path)
         else:
             print("Folder already exists")
 
     def rm(self, file):
-        if self.commandExecutor.rm(file):
+        if self.commandExecutor.removeFile(file):
             print(file + " removed.")
         else:
             print("I cannot find this file.")
 
     def head(self, file, linesNum):
-        lines = self.commandExecutor.head(file, linesNum)
+        lines = self.commandExecutor.getTextLinesFromBeginning(file, linesNum)
         if lines:
             for line in lines:
                 print(line)

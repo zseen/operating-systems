@@ -9,7 +9,7 @@ class CommandExecutor:
     def getCurrentDirectory(self):
         return self.currentDirectory
 
-    def ls(self, instruction):
+    def listDirectoryContent(self, instruction):
         foldersList = []
 
         if len(instruction) == 2 and instruction[1] == "-r":
@@ -21,21 +21,15 @@ class CommandExecutor:
 
         return foldersList
 
-    def cd(self,location):
-        if location[0] == "parentDirectory":
-            currentDir = self.goBackOneLevel()
-            self.currentDirectory = currentDir
-        else:
-            currentDir = self.currentDirectory
-            newPath = FH.createDirectoryPath(currentDir,''.join(location))
-            exists = FH.checkIfDirectoryExists(newPath)
+    def changeDirectory(self, location):
+        currentDir = self.currentDirectory
+        newPath = FH.createDirectoryPath(currentDir,''.join(location))
+        exists = FH.checkIfDirectoryExists(newPath)
 
-            if exists:
-                self.currentDirectory = newPath
-            else:
-                return None
-        return self.currentDirectory
-
+        if exists:
+            self.currentDirectory = newPath
+            return True
+        return False
 
     def goBackOneLevel(self):
         atRootLevel = FH.isRootLevel(self.currentDirectory)
@@ -45,10 +39,10 @@ class CommandExecutor:
             pathToModify.pop()
             for directory in pathToModify:
                 self.currentDirectory = str(directory)
+            return True
+        return False
 
-        return self.currentDirectory
-
-    def joinTogether(self, file1, file2, file3):
+    def joinTwoFilesTogetherInThird(self, file1, file2, file3):
         path1 = FH.createDirectoryPath(self.currentDirectory, file1)
         path2 = FH.createDirectoryPath(self.currentDirectory, file2)
         path3 = FH.createDirectoryPath(self.currentDirectory, file3)
@@ -68,7 +62,7 @@ class CommandExecutor:
         else:
             return None
 
-    def printTogether(self, file1, file2):
+    def printTwoFilesTogether(self, file1, file2):
         path1 = FH.createDirectoryPath(self.currentDirectory, file1)
         path2 = FH.createDirectoryPath(self.currentDirectory, file2)
         content = []
@@ -84,7 +78,7 @@ class CommandExecutor:
             return None
 
 
-    def cat(self, file):
+    def getFileContent(self, file):
         pathToFile = FH.createDirectoryPath(self.currentDirectory, file)
         exists = FH.checkIfFileExists(pathToFile)
         content = []
@@ -97,16 +91,15 @@ class CommandExecutor:
         else:
             return None
 
-    def mkdir(self, name):
+    def makeDirectory(self, name):
         newPath = FH.createDirectoryPath(self.currentDirectory, name)
 
         if not FH.checkIfDirectoryExists(newPath):
             os.makedirs(newPath)
-            return newPath
-        else:
-            return None
+            return True
+        return False
 
-    def rm(self, name):
+    def removeFile(self, name):
         filePath = FH.createDirectoryPath(self.currentDirectory, name)
         exists = FH.checkIfFileExists(filePath)
         if exists:
@@ -115,7 +108,7 @@ class CommandExecutor:
         else:
             return False
 
-    def head(self, file, linesNum):
+    def getTextLinesFromBeginning(self, file, linesNum):
         path = FH.createDirectoryPath(self.currentDirectory, file)
         exists = FH.checkIfFileExists(path)
         content = []
