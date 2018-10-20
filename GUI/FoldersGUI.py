@@ -11,7 +11,12 @@ class FolderPrinter:
         self._commandExecutor.changeDirectory(name)
         self.renderButtons()
 
+    def goBackOnClicked(self):
+        self._commandExecutor.goBackOneLevel()
+        self.renderButtons()
+
     def renderButtons(self):
+
         for button in self._buttons:
             button.grid_remove()
         folders = self._commandExecutor.listDirectoryContent(self._commandExecutor.getCurrentDirectory())
@@ -26,8 +31,15 @@ class FolderPrinter:
         frame = Frame(width=500, height=500)
         frame.grid()
         swin = ScrolledWindow(frame, width=600, height=600)
+
         swin.grid()
         self._win = swin.window
+
+
+        backButton = Button(frame, text="Back to previous folder", fg="black", bg="salmon",
+                            command=self.goBackOnClicked)
+        backButton.bind("<Mouse-1>", self._commandExecutor.goBackOneLevel())
+        backButton.grid()
 
         self.renderButtons()
 
