@@ -6,53 +6,39 @@ import CommandExecutor as CLE
 class FolderPrinter:
     def __init__(self):
         self.commandExecutor = CLE.CommandExecutor()
-        self.location = self.commandExecutor.getCurrentDirectory()
+        self._win = None
+        self.buttons = []
 
-    def printFileNameOnButton(self, name):
-        print(name)
+    def onClicked(self, name):
+        self.commandExecutor.changeDirectory(name)
+        self.renderButtons()
 
-    def clickButtonSeeContent(self, button):
-        filename = self.commandExecutor.changeDirectory(str(button))
+    def renderButtons(self):
+        for button in self.buttons:
+            button.grid_remove()
+        folders = self.commandExecutor.listDirectoryContent(self.commandExecutor.getCurrentDirectory())
+        for folder in folders:
+            b = Button(self.win, text=folder, fg="gray10", bg="old lace", command=lambda folderName=folder: self.onClicked(folderName))
+            b.bind("<Mouse-1>", self.commandExecutor.changeDirectory(str(b)))
+            self.buttons.append(b)
+            b.grid(sticky=N + S + E + W)
 
-        button.bind("<Mouse-1>", filename)
-        button.grid()
-
-    def contentToButtons(self):
-        folders = self.commandExecutor.listDirectoryContent(self.location)
+    def GUImainloop(self):
         root = Tk()
         frame = Frame(width=500, height=500)
         frame.grid()
         swin = ScrolledWindow(frame, width=600, height=600)
         swin.grid()
-        win = swin.window
+        self.win = swin.window
 
-        for folder in folders:
-            f = Button(win, text=folder, fg="gray10", bg="old lace", command=lambda folderName=folder: self.printFileNameOnButton(folderName))
-            f.bind("<Mouse-1>", self.commandExecutor.changeDirectory(str(f)))
-
-
-            f.grid(sticky=N + S + E + W)
-            #self.clickButtonSeeContent(f)
-
-
-
-        #root = Tk()
-        #root.filename = filedialog.askopenfilename(initialdir=self.commandExecutor.getCurrentDirectory(), title="Select file",
-        #                                               filetypes=(("jpeg files", "*.jpg"), ("all files", "*.*")))
-        #print(root.filename)
-
-
+        self.renderButtons()
 
         root.mainloop()
 
 
-
-
-
-
 def main():
     c = FolderPrinter()
-    c.contentToButtons()
+    c.GUImainloop()
 
 if __name__ == "__main__":
     main()
