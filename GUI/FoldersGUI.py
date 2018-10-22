@@ -1,6 +1,7 @@
 from tkinter.tix import *
 import CommandExecutor as CLE
 
+
 class FolderPrinter:
     def __init__(self):
         self._commandExecutor = CLE.CommandExecutor()
@@ -14,10 +15,17 @@ class FolderPrinter:
             self._commandExecutor.changeDirectory(name)
             self.renderButtons()
         elif CLE.FH.checkIfFileExists(file):
-            print(self._commandExecutor.getFileContent(name))
+            textWindow = Text(self._win, wrap=WORD , width=80, height=20)
+            content = self._commandExecutor.getFileContent(str(name))
+            for line in content:
+                textWindow.insert(INSERT, line)
+            textWindow.grid(sticky=N + S + E + W)
+
+            closeButton = Button(self._win, text="Close", fg="black", bg="salmon", command=textWindow.destroy)
+            closeButton.bind("<Mouse-1>", self._commandExecutor.getFileContent(self._commandExecutor.getCurrentDirectory()))
+            closeButton.grid()
+
             self.renderButtons()
-        else:
-            print("Ohh")
 
     def goBackOnClicked(self):
         self._commandExecutor.goBackOneLevel()
