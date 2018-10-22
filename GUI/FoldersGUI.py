@@ -8,15 +8,22 @@ class FolderPrinter:
         self._buttons = []
 
     def onClicked(self, name):
-        self._commandExecutor.changeDirectory(name)
-        self.renderButtons()
+        file = CLE.FH.createDirectoryPath(self._commandExecutor.getCurrentDirectory(), name)
+
+        if CLE.FH.checkIfDirectoryExists(file):
+            self._commandExecutor.changeDirectory(name)
+            self.renderButtons()
+        elif CLE.FH.checkIfFileExists(file):
+            print(self._commandExecutor.getFileContent(name))
+            self.renderButtons()
+        else:
+            print("Ohh")
 
     def goBackOnClicked(self):
         self._commandExecutor.goBackOneLevel()
         self.renderButtons()
 
     def renderButtons(self):
-
         for button in self._buttons:
             button.grid_remove()
         folders = self._commandExecutor.listDirectoryContent(self._commandExecutor.getCurrentDirectory())
@@ -34,7 +41,6 @@ class FolderPrinter:
 
         swin.grid()
         self._win = swin.window
-
 
         backButton = Button(frame, text="Back to previous folder", fg="black", bg="salmon",
                             command=self.goBackOnClicked)
