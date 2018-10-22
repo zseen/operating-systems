@@ -14,22 +14,32 @@ class FolderPrinter:
         if CLE.FH.checkIfDirectoryExists(file):
             self._commandExecutor.changeDirectory(name)
             self.renderButtons()
-        elif CLE.FH.checkIfFileExists(file):
-            textWindow = Text(self._win, wrap=WORD , width=80, height=20)
-            content = self._commandExecutor.getFileContent(str(name))
-            for line in content:
-                textWindow.insert(INSERT, line)
-            textWindow.grid(sticky=N + S + E + W)
 
-            closeButton = Button(self._win, text="Close", fg="black", bg="salmon", command=textWindow.destroy)
+        elif CLE.FH.checkIfFileExists(file):
+            textWindow = self.getTextWindowWithText(name)
+
+            closeButton = Button(self._win, text="Close", fg="black", bg="salmon",
+                                 command=lambda: self.onClickCloseTextFileButton(closeButton, textWindow))
             closeButton.bind("<Mouse-1>", self._commandExecutor.getFileContent(self._commandExecutor.getCurrentDirectory()))
             closeButton.grid()
 
             self.renderButtons()
 
+    def getTextWindowWithText(self, name):
+        textWindow = Text(self._win, wrap=WORD, width=80, height=20)
+        content = self._commandExecutor.getFileContent(str(name))
+        for line in content:
+            textWindow.insert(INSERT, line)
+        textWindow.grid(sticky=N + S + E + W)
+        return textWindow
+
     def goBackOnClicked(self):
         self._commandExecutor.goBackOneLevel()
         self.renderButtons()
+
+    def onClickCloseTextFileButton(self, button, window):
+        window.destroy()
+        button.grid_remove()
 
     def renderButtons(self):
         for button in self._buttons:
