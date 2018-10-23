@@ -9,31 +9,27 @@ class FolderPrinter:
         self._buttons = []
 
     def onClicked(self, name):
-        file = CLE.FH.createDirectoryPath(self._commandExecutor.getCurrentDirectory(), name)
+        locationType = self._commandExecutor.checkIfTypeFileOrDirectory(name)
 
-        if CLE.FH.checkIfDirectoryExists(file):
+        if locationType == "Directory":
             self._commandExecutor.changeDirectory(name)
             self.renderButtons()
-
-        elif CLE.FH.checkIfFileExists(file):
-            textWindow = self.getTextWindowWithText(name)
-
+        else:
+            content = self._commandExecutor.getFileContent(str(name))
+            textWindow = self.createTextWindowWithContent(content)
             closeButton = Button(self._win, text="Close", fg="black", bg="salmon",
-                                 command=lambda: self.onClickCloseTextFileButton(closeButton, textWindow))
-            closeButton.bind("<Mouse-1>", self._commandExecutor.getFileContent(self._commandExecutor.getCurrentDirectory()))
+                                    command=lambda: self.onClickCloseTextFileButton(closeButton, textWindow))
             closeButton.grid()
-
             self.renderButtons()
 
-    def getTextWindowWithText(self, name):
+    def createTextWindowWithContent(self, fileName):
         textWindow = Text(self._win, wrap=WORD, width=80, height=20)
-        content = self._commandExecutor.getFileContent(str(name))
-        for line in content:
+        for line in fileName:
             textWindow.insert(INSERT, line)
         textWindow.grid(sticky=N + S + E + W)
         return textWindow
 
-    def goBackOnClicked(self):
+    def onClickBackButton(self):
         self._commandExecutor.goBackOneLevel()
         self.renderButtons()
 
@@ -47,7 +43,6 @@ class FolderPrinter:
         folders = self._commandExecutor.listDirectoryContent(self._commandExecutor.getCurrentDirectory())
         for folder in folders:
             b = Button(self._win, text=folder, fg="gray10", bg="old lace", command=lambda folderName=folder: self.onClicked(folderName))
-            b.bind("<Mouse-1>", self._commandExecutor.changeDirectory(str(b)))
             self._buttons.append(b)
             b.grid(sticky=N + S + E + W)
 
@@ -61,8 +56,7 @@ class FolderPrinter:
         self._win = swin.window
 
         backButton = Button(frame, text="Back to previous folder", fg="black", bg="salmon",
-                            command=self.goBackOnClicked)
-        backButton.bind("<Mouse-1>", self._commandExecutor.goBackOneLevel())
+                            command=self.onClickBackButton)
         backButton.grid()
 
         self.renderButtons()

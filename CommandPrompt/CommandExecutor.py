@@ -125,3 +125,14 @@ class CommandExecutor:
                 content.append(line)
         return content
 
+    def createPathToDirectory(self, destination):
+        path = FH.createDirectoryPath(self.currentDirectory, destination)
+        return path
+
+    def checkIfTypeFileOrDirectory(self, name):
+        namePath = self.createPathToDirectory(name)
+        if os.path.isdir(namePath):
+            return "Directory"
+        else:
+            return "File"
+
