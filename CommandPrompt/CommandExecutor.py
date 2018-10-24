@@ -1,6 +1,9 @@
 import os
 from itertools import islice
 import FilesystemHelpers as FH
+from enum import Enum
+
+EntityType = Enum('EntityType', 'file folder')
 
 class CommandExecutor:
     def __init__(self):
@@ -129,10 +132,14 @@ class CommandExecutor:
         path = FH.createDirectoryPath(self.currentDirectory, destination)
         return path
 
+
     def checkIfTypeFileOrDirectory(self, name):
         namePath = self.createPathToDirectory(name)
+
         if os.path.isdir(namePath):
-            return "Directory"
+            return EntityType.folder
         else:
-            return "File"
+            return EntityType.file
+
+
 

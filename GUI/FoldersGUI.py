@@ -7,20 +7,22 @@ class FolderPrinter:
         self._commandExecutor = CLE.CommandExecutor()
         self._win = None
         self._buttons = []
+        self._isFileOpen = False
+        self._isTextWindowVisible = False
 
-    def onClicked(self, name):
+    def onClickedOpenTextOtChangeDirectory(self, name):
         locationType = self._commandExecutor.checkIfTypeFileOrDirectory(name)
+        self._isFileOpen = True
 
-        if locationType == "Directory":
+        if locationType == CLE.EntityType.folder:
             self._commandExecutor.changeDirectory(name)
-            self.renderButtons()
         else:
             content = self._commandExecutor.getFileContent(str(name))
             textWindow = self.createTextWindowWithContent(content)
             closeButton = Button(self._win, text="Close", fg="black", bg="salmon",
                                     command=lambda: self.onClickCloseTextFileButton(closeButton, textWindow))
             closeButton.grid()
-            self.renderButtons()
+        self.renderUI()
 
     def createTextWindowWithContent(self, fileName):
         textWindow = Text(self._win, wrap=WORD, width=80, height=20)
@@ -37,12 +39,20 @@ class FolderPrinter:
         window.destroy()
         button.grid_remove()
 
+    def renderUI(self):
+        if self._isFileOpen:
+            self._isTextWindowVisible = True
+        else:
+            self._isTextWindowVisible = False
+
+        self.renderButtons()
+
     def renderButtons(self):
         for button in self._buttons:
             button.grid_remove()
         folders = self._commandExecutor.listDirectoryContent(self._commandExecutor.getCurrentDirectory())
         for folder in folders:
-            b = Button(self._win, text=folder, fg="gray10", bg="old lace", command=lambda folderName=folder: self.onClicked(folderName))
+            b = Button(self._win, text=folder, fg="gray10", bg="old lace", command=lambda folderName=folder: self.onClickedOpenTextOtChangeDirectory(folderName))
             self._buttons.append(b)
             b.grid(sticky=N + S + E + W)
 
@@ -59,7 +69,7 @@ class FolderPrinter:
                             command=self.onClickBackButton)
         backButton.grid()
 
-        self.renderButtons()
+        self.renderUI()
 
         root.mainloop()
 
