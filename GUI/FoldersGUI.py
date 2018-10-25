@@ -10,7 +10,6 @@ class FolderPrinter:
         self._currOpenFile = None
         self._textWindow = None
         self._closeButton = None
-        self._failureMessageLabel = None
 
     def _onClickButtonForFolderContent(self, name):
         locationType = self._commandExecutor.checkIfTypeFileOrDirectory(name)
@@ -30,21 +29,16 @@ class FolderPrinter:
         self._renderUI()
 
     def _renderUI(self):
-        if self._failureMessageLabel is not None:
-            self._failureMessageLabel.grid_remove()
-        try:
-            if self._currOpenFile is not None:
-                fileContent = self._commandExecutor.getFileContent(self._currOpenFile)
-                self._textWindow.delete('1.0', END)
-                self._textWindow.insert(INSERT, fileContent)
-                self._textWindow.grid(sticky=N + S + E + W)
-                self._closeButton.grid()
-            else:
-                self._textWindow.grid_remove()
-                self._closeButton.grid_remove()
-        except UnicodeError:
-            self._failureMessageLabel = Label(self._mainWindow, fg="red", text="I cannot open this file")
-            self._failureMessageLabel.grid()
+        if self._currOpenFile:
+            fileContent = self._commandExecutor.getFileContent(self._currOpenFile)
+            self._textWindow.delete('1.0', END)
+            self._textWindow.insert(INSERT, fileContent)
+            self._textWindow.grid(sticky=N + S + E + W)
+            self._closeButton.grid()
+        else:
+            self._textWindow.grid_remove()
+            self._closeButton.grid_remove()
+
         self._renderButtonsForFolderContent()
 
     def _renderButtonsForFolderContent(self):
