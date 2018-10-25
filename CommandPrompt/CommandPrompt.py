@@ -105,7 +105,7 @@ class CommandPrompt:
 
     def mkdir(self, name):
         isCreated = self.commandExecutor.makeDirectory(name)
-        path = CLE.FH.createDirectoryPath(self.commandExecutor.getCurrentDirectory(), name)
+        path = CLE.FH.createPathInDirectory(self.commandExecutor.getCurrentDirectory(), name)
         if isCreated:
             print("Your new folder is ready! It is called " + name + " and is here: " + path)
         else:

@@ -26,7 +26,7 @@ class CommandExecutor:
 
     def changeDirectory(self, location):
         currentDir = self.currentDirectory
-        newPath = FH.createDirectoryPath(currentDir,''.join(location))
+        newPath = FH.createPathInDirectory(currentDir, ''.join(location))
         exists = FH.checkIfDirectoryExists(newPath)
 
         if not exists:
@@ -48,9 +48,9 @@ class CommandExecutor:
         return True
 
     def joinTwoFilesTogetherInThird(self, file1, file2, file3):
-        path1 = FH.createDirectoryPath(self.currentDirectory, file1)
-        path2 = FH.createDirectoryPath(self.currentDirectory, file2)
-        path3 = FH.createDirectoryPath(self.currentDirectory, file3)
+        path1 = FH.createPathInDirectory(self.currentDirectory, file1)
+        path2 = FH.createPathInDirectory(self.currentDirectory, file2)
+        path3 = FH.createPathInDirectory(self.currentDirectory, file3)
         content = []
 
         if not (FH.checkIfFileExists(path1) and FH.checkIfFileExists(path2)):
@@ -69,8 +69,8 @@ class CommandExecutor:
 
 
     def printTwoFilesTogether(self, file1, file2):
-        path1 = FH.createDirectoryPath(self.currentDirectory, file1)
-        path2 = FH.createDirectoryPath(self.currentDirectory, file2)
+        path1 = FH.createPathInDirectory(self.currentDirectory, file1)
+        path2 = FH.createPathInDirectory(self.currentDirectory, file2)
         content = []
 
         if not (FH.checkIfFileExists(path1) and FH.checkIfFileExists(path2)):
@@ -85,7 +85,7 @@ class CommandExecutor:
 
 
     def getFileContent(self, file):
-        pathToFile = FH.createDirectoryPath(self.currentDirectory, file)
+        pathToFile = FH.createPathInDirectory(self.currentDirectory, file)
         exists = FH.checkIfFileExists(pathToFile)
         content = []
 
@@ -98,7 +98,7 @@ class CommandExecutor:
         return content
 
     def makeDirectory(self, name):
-        newPath = FH.createDirectoryPath(self.currentDirectory, name)
+        newPath = FH.createPathInDirectory(self.currentDirectory, name)
 
         if FH.checkIfDirectoryExists(newPath):
             return False
@@ -107,7 +107,7 @@ class CommandExecutor:
         return True
 
     def removeFile(self, name):
-        filePath = FH.createDirectoryPath(self.currentDirectory, name)
+        filePath = FH.createPathInDirectory(self.currentDirectory, name)
         exists = FH.checkIfFileExists(filePath)
         if not exists:
             return False
@@ -116,7 +116,7 @@ class CommandExecutor:
         return True
 
     def getTextLinesFromBeginning(self, file, linesNum):
-        path = FH.createDirectoryPath(self.currentDirectory, file)
+        path = FH.createPathInDirectory(self.currentDirectory, file)
         exists = FH.checkIfFileExists(path)
         content = []
 
@@ -128,13 +128,13 @@ class CommandExecutor:
                 content.append(line)
         return content
 
-    def createPathToDirectory(self, destination):
-        path = FH.createDirectoryPath(self.currentDirectory, destination)
+    def getPathFromCurrentFolder(self, destination):
+        path = FH.createPathInDirectory(self.currentDirectory, destination)
         return path
 
 
     def checkIfTypeFileOrDirectory(self, name):
-        namePath = self.createPathToDirectory(name)
+        namePath = self.getPathFromCurrentFolder(name)
 
         if os.path.isdir(namePath):
             return EntityType.folder
