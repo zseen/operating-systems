@@ -1,36 +1,78 @@
 from tkinter.tix import *
 import CommandExecutor as CLE
 
+
 class FolderPrinter:
     def __init__(self):
         self._commandExecutor = CLE.CommandExecutor()
-        self._win = None
-        self._buttons = []
+        self._mainWindow = None
+        self._buttonsForFolderContent = []
+        self._currOpenFile = None
+        self._textWindow = None
+        self._closeButton = None
 
-    def onClicked(self, name):
-        self._commandExecutor.changeDirectory(name)
-        self.renderButtons()
+    def _onClickButtonForFolderContent(self, name):
+        locationType = self._commandExecutor.checkIfTypeFileOrDirectory(name)
 
-    def renderButtons(self):
-        for button in self._buttons:
+        if locationType == CLE.EntityType.folder:
+            self._commandExecutor.changeDirectory(name)
+        else:
+            self._currOpenFile = self._commandExecutor.getPathFromCurrentFolder(name)
+        self._renderUI()
+
+    def _onClickBackButton(self):
+        self._commandExecutor.goBackOneLevel()
+        self._renderUI()
+
+    def _onClickCloseTextFileButton(self):
+        self._currOpenFile = None
+        self._renderUI()
+
+    def _renderUI(self):
+        if self._currOpenFile:
+            fileContent = self._commandExecutor.getFileContent(self._currOpenFile)
+            self._textWindow.delete('1.0', END)
+            self._textWindow.insert(INSERT, fileContent)
+            self._textWindow.grid(sticky=N + S + E + W)
+            self._closeButton.grid()
+        else:
+            self._textWindow.grid_remove()
+            self._closeButton.grid_remove()
+
+        self._renderButtonsForFolderContent()
+
+    def _renderButtonsForFolderContent(self):
+        for button in self._buttonsForFolderContent:
             button.grid_remove()
         folders = self._commandExecutor.listDirectoryContent(self._commandExecutor.getCurrentDirectory())
-        for folder in folders:
-            b = Button(self._win, text=folder, fg="gray10", bg="old lace", command=lambda folderName=folder: self.onClicked(folderName))
-            b.bind("<Mouse-1>", self._commandExecutor.changeDirectory(str(b)))
-            self._buttons.append(b)
+        for folderName in folders:
+            b = Button(self._mainWindow, text=folderName, fg="gray10", bg="old lace", command=lambda folderName=folderName: self._onClickButtonForFolderContent(folderName))
+            self._buttonsForFolderContent.append(b)
             b.grid(sticky=N + S + E + W)
 
-    def mainLoopGUI(self):
+    def _initialiseUI(self):
         root = Tk()
         frame = Frame(width=500, height=500)
         frame.grid()
         swin = ScrolledWindow(frame, width=600, height=600)
         swin.grid()
-        self._win = swin.window
+        self._mainWindow = swin.window
 
-        self.renderButtons()
+        backButton = Button(frame, text="Back to previous folder", fg="black", bg="salmon",
+                            command=self._onClickBackButton)
+        backButton.grid()
 
+
+        self._textWindow = Text(self._mainWindow, wrap=WORD, width=80, height=20)
+        self._closeButton = Button(self._mainWindow, text="Close", fg="black", bg="salmon",
+                                   command=self._onClickCloseTextFileButton)
+
+        self._renderUI()
+
+        return root
+
+    def mainLoopGUI(self):
+        root = self._initialiseUI()
         root.mainloop()
 
 

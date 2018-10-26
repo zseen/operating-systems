@@ -6,7 +6,7 @@ def getHomeDirectory():
     home = str(Path.home())
     return home
 
-def createDirectoryPath(currentDirectory, destination):
+def createPathInDirectory(currentDirectory, destination):
     newPath = os.path.join(currentDirectory, destination)
     return newPath
 
