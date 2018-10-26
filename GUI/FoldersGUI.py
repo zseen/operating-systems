@@ -62,22 +62,23 @@ class FolderPrinter:
                             command=self._onClickBackButton)
         backButton.grid()
 
-        self._renderButtonsForFolderContent()
 
         self._textWindow = Text(self._mainWindow, wrap=WORD, width=80, height=20)
         self._closeButton = Button(self._mainWindow, text="Close", fg="black", bg="salmon",
                                    command=self._onClickCloseTextFileButton)
 
+        self._renderUI()
+
         return root
 
-    def GUImainLoop(self):
+    def mainLoopGUI(self):
         root = self._initialiseUI()
         root.mainloop()
 
 
 def main():
     c = FolderPrinter()
-    c.GUImainLoop()
+    c.mainLoopGUI()
 
 if __name__ == "__main__":
     main()
