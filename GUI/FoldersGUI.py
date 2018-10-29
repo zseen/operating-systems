@@ -10,6 +10,7 @@ class FolderPrinter:
         self._currOpenFile = None
         self._textWindow = None
         self._closeButton = None
+        self._backButton = None
 
     def _onClickButtonForFolderContent(self, name):
         locationType = self._commandExecutor.checkIfTypeFileOrDirectory(name)
@@ -38,6 +39,9 @@ class FolderPrinter:
         else:
             self._textWindow.grid_remove()
             self._closeButton.grid_remove()
+            self._backButton.grid()
+            if self._commandExecutor.isRootLevel():
+                self._backButton.grid_remove()
 
         self._renderButtonsForFolderContent()
 
@@ -58,11 +62,8 @@ class FolderPrinter:
         swin.grid()
         self._mainWindow = swin.window
 
-        backButton = Button(frame, text="Back to previous folder", fg="black", bg="salmon",
+        self._backButton = Button(frame, text="Back to previous folder", fg="black", bg="salmon",
                             command=self._onClickBackButton)
-        backButton.grid()
-
-
         self._textWindow = Text(self._mainWindow, wrap=WORD, width=80, height=20)
         self._closeButton = Button(self._mainWindow, text="Close", fg="black", bg="salmon",
                                    command=self._onClickCloseTextFileButton)

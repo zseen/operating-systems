@@ -36,7 +36,7 @@ class CommandExecutor:
         return True
 
     def goBackOneLevel(self):
-        atRootLevel = FH.isRootLevel(self.currentDirectory)
+        atRootLevel = self.isRootLevel()
 
         if atRootLevel:
             return False
@@ -46,6 +46,10 @@ class CommandExecutor:
         for directory in pathToModify:
             self.currentDirectory = str(directory)
         return True
+
+    def isRootLevel(self):
+        atRootLevel = FH.isRootLevel(self.currentDirectory)
+        return atRootLevel
 
     def joinTwoFilesTogetherInThird(self, file1, file2, file3):
         path1 = FH.createPathInDirectory(self.currentDirectory, file1)
