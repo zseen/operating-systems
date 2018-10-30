@@ -39,9 +39,11 @@ class FolderPrinter:
         else:
             self._textWindow.grid_remove()
             self._closeButton.grid_remove()
+
+        if not self._commandExecutor.isRootLevel():
             self._backButton.grid()
-            if self._commandExecutor.isRootLevel():
-                self._backButton.grid_remove()
+        else:
+            self._backButton.grid_remove()
 
         self._renderButtonsForFolderContent()
 
