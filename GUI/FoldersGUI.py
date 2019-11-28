@@ -1,5 +1,8 @@
 from tkinter.tix import *
-import CommandExecutor as CLE
+import sys
+sys.path.append('../')
+
+from CommandPrompt import CommandExecutor as CLE
 
 
 class FolderPrinter:
@@ -13,13 +16,20 @@ class FolderPrinter:
         self._backButton = None
 
     def _onClickButtonForFolderContent(self, name):
-        locationType = self._commandExecutor.checkIfTypeFileOrDirectory(name)
+        try:
+            locationType = self._commandExecutor.checkIfTypeFileOrDirectory(name)
+            if locationType == CLE.EntityType.folder:
+                self._commandExecutor.changeDirectory(name)
+            else:
+                self._currOpenFile = self._commandExecutor.getPathFromCurrentFolder(name)
+            self._renderUI()
+        except PermissionError:
+            self._commandExecutor.goBackOneLevel()
+            self._textWindow.delete('1.0', END)
+            self._textWindow.insert(INSERT, "You don't have permission to view the content of this folder.")
+            self._textWindow.grid(sticky=N + S + E + W)
+            self._closeButton.grid()
 
-        if locationType == CLE.EntityType.folder:
-            self._commandExecutor.changeDirectory(name)
-        else:
-            self._currOpenFile = self._commandExecutor.getPathFromCurrentFolder(name)
-        self._renderUI()
 
     def _onClickBackButton(self):
         self._commandExecutor.goBackOneLevel()
@@ -31,9 +41,12 @@ class FolderPrinter:
 
     def _renderUI(self):
         if self._currOpenFile:
-            fileContent = self._commandExecutor.getFileContent(self._currOpenFile)
             self._textWindow.delete('1.0', END)
-            self._textWindow.insert(INSERT, fileContent)
+            try:
+                fileContent = self._commandExecutor.getFileContent(self._currOpenFile)
+                self._textWindow.insert(INSERT, fileContent)
+            except UnicodeDecodeError:
+                self._textWindow.insert(INSERT, "Cannot open this file extension.")
             self._textWindow.grid(sticky=N + S + E + W)
             self._closeButton.grid()
         else:
