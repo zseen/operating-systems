@@ -1,7 +1,6 @@
 from tkinter.tix import *
 import sys
 sys.path.append('../')
-
 from CommandPrompt import CommandExecutor as CLE
 
 
@@ -25,11 +24,8 @@ class FolderPrinter:
             self._renderUI()
         except PermissionError:
             self._commandExecutor.goBackOneLevel()
-            self._textWindow.delete('1.0', END)
-            self._textWindow.insert(INSERT, "You don't have permission to view the content of this folder.")
-            self._textWindow.grid(sticky=N + S + E + W)
-            self._closeButton.grid()
-
+            textToDisplay = "You don't have permission to view the content of this folder."
+            self._renderTextWindowWithText(textToDisplay)
 
     def _onClickBackButton(self):
         self._commandExecutor.goBackOneLevel()
@@ -44,11 +40,10 @@ class FolderPrinter:
             self._textWindow.delete('1.0', END)
             try:
                 fileContent = self._commandExecutor.getFileContent(self._currOpenFile)
-                self._textWindow.insert(INSERT, fileContent)
+                self._renderTextWindowWithText(fileContent)
             except UnicodeDecodeError:
-                self._textWindow.insert(INSERT, "Cannot open this file extension.")
-            self._textWindow.grid(sticky=N + S + E + W)
-            self._closeButton.grid()
+                errorMessage = "Cannot open this file extension."
+                self._renderTextWindowWithText(errorMessage)
         else:
             self._textWindow.grid_remove()
             self._closeButton.grid_remove()
@@ -86,6 +81,12 @@ class FolderPrinter:
         self._renderUI()
 
         return root
+
+    def _renderTextWindowWithText(self, textToDisplay):
+        self._textWindow.delete('1.0', END)
+        self._textWindow.insert(INSERT, textToDisplay)
+        self._textWindow.grid(sticky=N + S + E + W)
+        self._closeButton.grid()
 
     def mainLoopGUI(self):
         root = self._initialiseUI()
