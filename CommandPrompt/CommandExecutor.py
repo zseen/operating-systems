@@ -1,6 +1,6 @@
 import os
 from itertools import islice
-import FilesystemHelpers as FH
+from CommandPrompt import FilesystemHelpers as FH
 from enum import Enum
 
 EntityType = Enum('EntityType', 'file folder')

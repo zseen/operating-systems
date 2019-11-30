@@ -1,4 +1,4 @@
-import CommandExecutor as CLE
+from CommandPrompt import CommandExecutor as CLE
 
 INITIAL_HELP = ("Options:" '\n'
                 "'ls' to see my content, " '\n'
